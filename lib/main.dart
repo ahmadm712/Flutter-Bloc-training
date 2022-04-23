@@ -1,5 +1,8 @@
-import 'package:counter_bloc/bloc/counter_bloc.dart';
+// import 'package:counter_bloc/bloc-sederhana/counter_bloc.dart';
+// import 'package:counter_bloc/bloc/counter_bloc.dart';
+import 'package:counter_bloc/cubit/counter_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +19,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+        create: (context) => CounterCubit(),
+        child: const MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }
@@ -32,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // int _counter = 0;
-  final counterBloc = CounterBloc();
+  // final counterBloc = CounterBloc();
 
   // void _incrementCounter() {
   //   setState(() {
@@ -42,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    counterBloc.dispose();
+    // counterBloc.dispose();
     super.dispose();
   }
 
@@ -52,36 +58,39 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: StreamBuilder(
-          stream: counterBloc.counterStream,
-          builder: (context, snapshot) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    'You have pushed the button this many times:',
-                  ),
-                  Text(
-                    '${snapshot.data}',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                ],
+      body: BlocBuilder<CounterCubit, CounterState>(builder: (context, state) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'You have pushed the button this many times:',
               ),
-            );
-          }),
+              Text(
+                '${state.value}',
+                style: Theme.of(context).textTheme.headline4,
+              ),
+            ],
+          ),
+        );
+      }),
       floatingActionButton: Row(
         children: [
           FloatingActionButton(
             onPressed: () {
-              counterBloc.eventSinks.add(CounterEvent.Decrement);
+              // counterBloc.eventSinks.add(CounterEvent.Decrement);
+
+              // context.read<CounterBloc>().add(Decrement());
+              context.read<CounterCubit>().decrement();
             },
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           ),
           FloatingActionButton(
             onPressed: () {
-              counterBloc.eventSinks.add(CounterEvent.Increment);
+              // counterBloc.eventSinks.add(CounterEvent.Increment);
+              // context.read<CounterBloc>().add(Increment());
+              context.read<CounterCubit>().increment();
             },
             tooltip: 'Increment',
             child: const Icon(Icons.add),
